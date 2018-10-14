@@ -1,0 +1,331 @@
+cabal-version:       2.2
+                     -- for "common stanzas".
+
+build-type:          Simple
+
+----------------------------------------
+
+name:    OneThousandAndOneExampleHaskellPrograms
+version: 0.0
+-- x-revision: 0
+
+----------------------------------------
+
+synopsis: 1001 Haskell Examples
+
+description:
+    .
+    All examples are independent. Most are a single-file "Package Example"; each of which demonstrates the functions, types, and behavior of a single package, as well as providing additional documentation, and even a few utilities. Some are "Task Examples", that import multiple packages, and perform more complex tasks.
+
+    Naming is consistent. Each "Package Example" is named like:
+    .
+    @
+    executable egg-《package-name》
+       main-is:       Main_《package_name》
+       other-modules: Example_《package_name》
+       build-depends: 《package-name》
+       import:        haskell-example
+    @
+    .
+    i.e., replacing hyphens (in the package name) with underscores (for an idiomatic module name). also, "egg" is a pun on "example (program)").
+
+    @haskell-example@ is a @common@ stanza", which every @executable@ stanza shares. for consistency and convenience. Among other cabal fields, it @build-depends@ on @base@ and this package itself, as well as enabling some harmless syntactic @default-extensions@ (e.g. @-XPackageImports@,) which are helpful for making examples more readable. in particular, @OneThousandAndOneExampleHaskellPrograms@ has a(n internal) ibrary for a small module (i.e. @Internal.Eggs@) that provides utilities for @render@ing what we print out in a nice format, and @assert@ing examples match some value or satisfy a property. it's important that the output is as legible, and consistent, as possible, so one can quickly run a lot of the examples and skim their stdout.
+    .
+    @Main_package_name@ trivially re-exports @main@ from @Example_package_name@; this split lets us have both [1] an executable, and [2] a (named) module that we can still easily load into the @REPL@. 
+    .
+    For example, take @lens-aeson@. Its `.cabal` stanza is:
+    .
+    @
+     executable egg-lens-aeson
+       import:         egg
+       hs-source-dirs: package-lens-aeson
+       main-is:        Main_lens_aeson.hs
+       other-modules:  Example_lens_aeson
+       build-depends:  lens-aeson ^= 1
+    @
+    .
+    The executable is named:
+    .
+    @
+     $ egg-lens-aeson
+    @
+    .
+    The executable's entrypoint (i.e. `Main_lens_aeson.hs`) is boilerplate:
+    .
+    @
+     import Example_lens_aeson
+     main = main_lens_aeson
+    @
+    .
+    The library exports a qualified symbol, `main_lens_aeson :: IO ()`. It also exports several miscellaneous subexpressions. These other exports are utilities, name-worthy intermediate computations, ones with complicated types that are given manual signatures, ones that are linked to by others in the Haddocks, or anything worth running interactively from an interpreter (whether to apply different arguments to a function than the example's defaults, to inspect its type with @ghci> :t ...@ or @ghci> :i ...@, and so on). The file looks like:
+    .
+    @
+     \{-\# LANGUAGE OverloadedStrings \#-\}
+     
+     module Example_lens_aeson where
+     
+     import qualified "lens-aeson" Data.Aeson.Lens as JSON
+
+     main_lens_aeson = do
+
+       print $ object
+       print $ object JSON.^? value
+
+       putStrLn "[o.a]"       
+       print $ Just (JSON.String "xyz")
+
+       putStrLn "[o.a]"       
+       print $ Nothing
+
+       ...
+
+     object = "{\"a\": \"xyz\", \"b\": null}"
+
+     objectDotA = object JSON.^? (JSON.key "a" . JSON.nonNull)
+     objectDotB = object JSON.^? (JSON.key "b" . JSON.nonNull)
+
+     ...
+    .
+    @
+    .
+    This module shares the following with (most of) the other examples: we import only @base@ and the namesake package (whenever possible); we enable a single language extension (@-XOverloadedStrings@); all imports are @qualified@ (except for, sometimes, symbolic operators and core datatypes); all imports explicitly specify the module's package (via @-XPackageImports@); imports are grouped by package, most values and most datatypes are in their own individual "section" (the hortizontal bars in the comments); and so on.
+    .
+    Finally, enter these @cabal@ commands to run with the example program, or to mess around with it:
+    @
+    cabal new-build egg-lens-aeson
+    cabal new-repl  egg-lens-aeson
+    cabal new-run   egg-lens-aeson -- 
+    @
+    .
+    .
+
+----------------------------------------
+
+license:             GPL-3.0-or-later
+license-file:        LICENSE.txt
+copyright:           2018 Spiros Boosalis
+
+author:              Spiros Boosalis
+maintainer:          samboosalis@gmail.com
+
+category:            Example
+
+----------------------------------------
+
+stability:           provisional
+tested-with:
+  GHC == 8.4.3
+--, GHC == 8.6.2
+
+----------------------------------------
+-- FILES
+----------------------------------------
+
+data-files:
+  data/*.txt
+
+extra-source-files:
+ LICENSE.txt
+ .gitignore
+ Makefile
+
+----------------------------------------
+-- REPOSITORY
+----------------------------------------
+
+homepage:            http://github.com/sboosali/OneThousandAndOneExampleHaskellPrograms#readme
+bug-reports:         http://github.com/sboosali/OneThousandAndOneExampleHaskellPrograms/issues
+
+source-repository head
+  type:     git
+  location: git://github.com/sboosali/OneThousandAndOneExampleHaskellPrograms.git
+  subdir:   .
+
+-- source-repository this
+--   type:     git
+--   location: https://github.com/sboosali/OneThousandAndOneExampleHaskellPrograms/tree/v0.1
+--   subdir:   .
+
+----------------------------------------
+-- FLAGS
+----------------------------------------
+
+-- flag ...
+--   default:     False
+--   description: Enable ...
+--   manual:      True
+
+----------------------------------------
+-- COMMON_STANZAS
+----------------------------------------
+common egg
+
+ ------------------------------
+ ------------------------------
+ default-language:
+   Haskell2010
+
+ ------------------------------
+ ------------------------------
+ build-depends:
+   base >=4.10 && <5
+
+ ------------------------------
+ ------------------------------
+ ghc-options:
+
+  --------------------
+  -- warning groups
+  --------------------
+
+  -Wall
+
+  --------------------
+  -- disabled warnings
+  --------------------
+
+  -Wno-unticked-promoted-constructors
+
+  --------------------
+  -- enabled warnings
+  --------------------
+
+  -- enable
+  -Wincomplete-uni-patterns
+  -Wincomplete-record-updates
+  -Widentities
+  -Wmissing-methods
+  -fwarn-tabs
+ 
+  --------------------
+  -- typed-holes
+  --------------------
+
+  -- use `typed-holes`, not `undefined`, during development
+
+  -fdefer-typed-holes
+  -Wtyped-holes
+
+  --------------------
+  -- (miscellaneous warnings)
+  --------------------
+
+  -- raise a warning into an error
+  -- -Werror=missing-fields
+
+ if impl(ghc >= 8.0)
+    ghc-options:
+
+        --------------------
+        -- warning groups
+        --------------------     
+
+        -Wcompat
+      
+        --------------------
+        -- enabled warnings
+        --------------------
+
+        -Wnoncanonical-monad-instances
+        -Wnoncanonical-monadfail-instances
+
+ ------------------------------
+ ------------------------------
+
+ default-extensions:
+
+   --------------------
+   -- `deriving`
+   --------------------
+   AutoDeriveTypeable
+
+   DeriveDataTypeable
+   DeriveGeneric
+   DeriveFunctor
+   DeriveFoldable
+   DeriveTraversable
+   DeriveLift
+
+   StandaloneDeriving
+
+   --------------------
+   -- syntax
+   --------------------
+   PackageImports
+   InstanceSigs
+
+   LambdaCase
+
+   RecordWildCards
+   NamedFieldPuns
+
+   EmptyCase
+   EmptyDataDecls
+
+   TypeOperators
+
+   TupleSections
+
+ other-extensions:
+
+   --------------------
+   -- macros
+   --------------------
+   TemplateHaskell
+   -- QuasiQuotes
+
+   --------------------
+   -- syntax (of literals)
+   --------------------
+   OverloadedStrings
+   OverloadedLists
+
+   --------------------
+   -- typeclasses
+   --------------------
+   MultiParamTypeClasses
+   FlexibleContexts
+   FlexibleInstances
+   TypeFamilies
+   FunctionalDependencies
+
+   --------------------
+   -- patterns
+   --------------------
+   ViewPatterns
+   PatternSynonyms
+
+   --------------------
+   -- (miscellaneous)
+   --------------------
+   ScopedTypeVariables
+
+   -- RebindableSyntax
+   -- kinds:
+   -- DataKinds ConstraintKinds
+   -- harmful to inference:
+   -- GADTs RankNTypes
+   -- (miscellaneous)
+
+----------------------------------------
+-- LIBRARY
+----------------------------------------
+--library
+
+----------------------------------------
+-- EXECUTABLES
+----------------------------------------
+
+executable egg-lens-aeson
+  import:         egg
+
+  hs-source-dirs: package-lens-aeson
+  main-is:        Main_lens_aeson.hs
+  other-modules:  Example_lens_aeson
+
+  build-depends:
+      lens-aeson ^>= 1.0.2
+    , lens
+
+----------------------------------------
+
