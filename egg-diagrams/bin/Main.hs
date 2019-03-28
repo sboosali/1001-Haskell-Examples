@@ -27,9 +27,11 @@
 
 module Example.Diagrams where
 
-import "diagrams-svg" Diagrams.Backend.SVG.CmdLine
-import "diagrams-lib" Diagrams.BoundingBox
-import "diagrams-lib" Diagrams.Prelude
+import qualified "diagrams-cairo" Diagrams.Backend.Cairo as Cairo
+
+import "diagrams-svg"   Diagrams.Backend.SVG.CmdLine
+import "diagrams-lib"   Diagrams.BoundingBox
+import "diagrams-lib"   Diagrams.Prelude
 
 import "SVGFonts" Graphics.SVGFonts
 
@@ -126,6 +128,13 @@ drawLines cube = foldr (.) id (map (uncurry
                 , ("permgroup","parampermgroup")
                 , ("parampermgroup","paramsymgroup")
                 ]
+
+diagramWithCustomFont :: Text -> Int -> Text -> Diagram Cairo.B
+diagramWithCustomFont font size text =
+
+      D.text text # D.font font # D.fontSize size
+
+--diagramWithCustomFont "Iosevka.ttf" 90 "some text with custom font"
 
 main = mainWith (example :: Diagram B)
 

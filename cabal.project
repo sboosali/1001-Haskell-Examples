@@ -1,12 +1,16 @@
 ----------------------------------------
-packages: ./egg-*
+packages: ./egg-diagrams
+
+          ./tutorials/gtk3
+
+          
 
 -- packages: ./
+--           ./egg-*
 --           ./package-*
-
-          -- ./packages/*
-          -- ./tutorials/*
-          -- ./workflows/*
+--           ./packages/*
+--           ./tutorials/*
+--           ./workflows/*
 
 --------------------------------------------------
 -- LocalFlags (i.e. only for project/vendored packages)
