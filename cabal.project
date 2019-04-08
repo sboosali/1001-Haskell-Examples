@@ -1,9 +1,7 @@
 ----------------------------------------
 packages: ./egg-diagrams
 
-          ./tutorials/gtk3
-
-          
+          -- ./tutorials/gtk3
 
 -- packages: ./
 --           ./egg-*

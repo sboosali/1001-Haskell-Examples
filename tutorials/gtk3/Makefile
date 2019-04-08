@@ -26,7 +26,7 @@ ProjectFile ?=./cabal.project
 
 LibraryTarget    ?=lib:spiros
 
-ExecutableTarget ?=exe:example-sprios
+ExecutableTarget ?=exe:example-spiros
 
 #------------------------------------------------#
 
@@ -238,15 +238,15 @@ cabal2nix-dynamic:
 
 example:
 
-	$(CabalBuild) $(CabalOptions) "exe:example-sprios"
+	$(CabalBuild) $(CabalOptions) "exe:example-spiros"
 
-	$(Cabal) new-exec $(CabalOptions) -- example-sprios --version
+	$(Cabal) new-exec $(CabalOptions) -- example-spiros --version
 
-	$(Cabal) new-install $(CabalOptions) --overwrite-policy=always "exe:example-sprios"
+	$(Cabal) new-install $(CabalOptions) --overwrite-policy=always "exe:example-spiros"
 
-	ldd `which example-sprios`
+	ldd `which example-spiros`
 
-#	cabal new-exec --project-file ./cabal.project -- ldd `which example-sprios`
+#	cabal new-exec --project-file ./cabal.project -- ldd `which example-spiros`
 
 .PHONY: example
 
@@ -269,7 +269,7 @@ sdist:
 
 static: cabal-static.project
 
-	$(Cabal) new-build -fstatic $(CabalStatic) --project-file="./cabal-static.project" exe:example-sprios
+	$(Cabal) new-build -fstatic $(CabalStatic) --project-file="./cabal-static.project" exe:example-spiros
 
 # --enable-executable-static
 # -fstatic
