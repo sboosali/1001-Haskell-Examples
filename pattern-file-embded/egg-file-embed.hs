@@ -42,14 +42,20 @@ import qualified "bytestring" Data.ByteString.Lazy  as ByteString
 import           "bytestring" Data.ByteString.Lazy (ByteString)
 
 --------------------------------------------------
+
+import qualified "base" Control.Monad as Monad
+
+--------------------------------------------------
 -- Main ------------------------------------------
 --------------------------------------------------
 
 main = do
 
-  let value = Map.lookup "ghc" tableMap
+  let value = Monad.join (Map.lookup "ghc" tableMap)
 
   print value
+
+--ByteString.writeFile "./table.gz" tableBytes
 
 --------------------------------------------------
 -- Definitions -----------------------------------
@@ -61,6 +67,7 @@ main = do
 
 tableBytes :: ByteString
 tableBytes =
+
     "\US\139\b\NUL\NUL\NUL\NUL\NUL\NUL\ETXEN\
     \\219\SO\194 \f\197\224\188\196\CAN\227\US\
     \\224\171~\NAKc\GS4ce\161`\178\191\215(\176\
