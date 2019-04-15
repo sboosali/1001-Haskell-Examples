@@ -1,6 +1,7 @@
 ----------------------------------------
-packages: ./egg-diagrams
+packages: ./package-formatting
 
+          -- ./egg-diagrams
           -- ./tutorials/gtk3
 
 -- packages: ./

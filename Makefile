@@ -96,12 +96,28 @@ TarballDirectory=$(ReleaseDirectory)/tarballs
 # Makefile Targets: Standard #####################
 ##################################################
 
-all: file-embded
+all: run-formatting run-file-embded
 
 .PHONY: all
 
 ##################################################
 # Makefile Targets: Haskell ######################
+##################################################
+
+formatting:
+
+	$(Cabal) new-build "./package-formatting"
+
+.PHONY: formatting
+
+#------------------------------------------------#
+
+run-formatting:
+
+	$(Cabal) new-run "./package-formatting" --
+
+.PHONY: run-formatting
+
 ##################################################
 
 file-embded:
